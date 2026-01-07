@@ -24,6 +24,9 @@ export const generateWeeklyPlan = async (profile: UserProfile, startDate: Date):
     - Persona/Voice: ${profile.persona}
     - Visual Style: ${profile.visualStyle}
     
+    ADDITIONAL CONTEXT (Important):
+    ${profile.additionalInfo || "None provided."}
+    
     SCHEDULING:
     - Active Days: ${activeDays}
     
@@ -37,6 +40,7 @@ export const generateWeeklyPlan = async (profile: UserProfile, startDate: Date):
     1. Consistency: Map specific pillars to specific days where it makes sense (e.g. "Tutorial Tuesdays").
     2. Rotation: If a format is high-effort, schedule it less frequently if needed, but maintain the specific day-of-week slot.
     3. Variety: Ensure the schedule mixes the pillars to keep the audience engaged.
+    4. Context: Use the 'Additional Context' to inform themes (e.g. if they have an ongoing series, schedule the next episode).
     
     Task:
     Generate a 7-day content plan starting from ${startDate.toDateString()}.
@@ -62,7 +66,8 @@ export const generateWeeklyPlan = async (profile: UserProfile, startDate: Date):
                 properties: {
                   dayOffset: { type: Type.INTEGER, description: "0 for the start date, 1 for the next day, etc." },
                   theme: { type: Type.STRING, description: "Short, punchy title for the content." },
-                  description: { type: Type.STRING, description: "A 1-sentence summary including the assigned Pillar/Format." }
+                  description: { type: Type.STRING, description: "A 1-sentence summary." },
+                  pillar: { type: Type.STRING, description: "The exact name of the Content Pillar assigned to this day." }
                 },
                 required: ["dayOffset", "theme", "description"]
               }
@@ -96,6 +101,9 @@ export const createChatSession = (profile: UserProfile, dayTheme: string, dayDes
         - Name: ${profile.name}
         - Voice/Persona: ${profile.persona}
         - Visual Aesthetic/Color Grading: ${profile.visualStyle}
+        
+        ADDITIONAL CONTEXT (Ongoing series, sponsors, life updates):
+        ${profile.additionalInfo || "None provided."}
         
         AVAILABLE FORMATS:
         ${pillarsContext}

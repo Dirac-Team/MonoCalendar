@@ -11,6 +11,7 @@ export interface UserProfile {
   contentPillars: ContentPillar[]; // List of recurring formats with details
   persona: string; // Detailed description of voice/personality
   visualStyle: string; // Color grading, editing style, aesthetic
+  additionalInfo?: string; // Context, ongoing series, sponsors, etc.
   isOnboarded: boolean;
 }
 
@@ -18,6 +19,7 @@ export interface DayPlan {
   date: string; // ISO Date string YYYY-MM-DD
   theme: string;
   description: string;
+  pillar?: string; // The specific format assigned to this day
   isPosted?: boolean;
 }
 
@@ -33,5 +35,6 @@ export interface WeeklyPlanResponse {
     dayOffset: number; // 0 for today/start date, 1 for tomorrow...
     theme: string;
     description: string;
+    pillar?: string;
   }[];
 }

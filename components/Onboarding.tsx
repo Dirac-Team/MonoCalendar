@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { UserProfile, ContentPillar } from '../types';
 import { Button, Input, TextArea, CheckboxCard } from './UI';
-import { ArrowRight, Sparkles, User, Building2, Youtube, Instagram, Layers, Plus, X, Edit2 } from 'lucide-react';
+import { ArrowRight, Sparkles, User, Building2, Youtube, Instagram, Plus, X } from 'lucide-react';
 
 interface OnboardingProps {
   onComplete: (profile: UserProfile) => void;
@@ -76,6 +76,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         contentPillars: pillars,
         persona,
         visualStyle,
+        additionalInfo: '', // Initialize empty
         isOnboarded: true
       });
     }

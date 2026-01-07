@@ -18,9 +18,16 @@ export const DayPlanner: React.FC<DayPlannerProps> = ({ dayPlan, userProfile, on
         {/* Left Side: Context & Overview */}
         <div className="w-full md:w-1/3 bg-zinc-50 border-b md:border-b-0 md:border-r border-zinc-200 p-8 flex flex-col overflow-y-auto">
           <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-2 text-zinc-500">
-              <CalendarIcon size={16} />
-              <span className="text-sm font-medium tracking-wide">{new Date(dayPlan.date).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 text-zinc-500">
+                <CalendarIcon size={16} />
+                <span className="text-sm font-medium tracking-wide">{new Date(dayPlan.date).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
+              </div>
+              {dayPlan.pillar && (
+                <span className="px-2 py-0.5 bg-zinc-100 border border-zinc-200 text-zinc-600 text-[10px] font-bold uppercase tracking-widest rounded-full">
+                  {dayPlan.pillar}
+                </span>
+              )}
             </div>
             {/* Mobile close button */}
             <button onClick={onClose} className="md:hidden p-2 hover:bg-zinc-200 rounded-full transition-colors">
