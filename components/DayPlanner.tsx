@@ -47,6 +47,16 @@ export const DayPlanner: React.FC<DayPlannerProps> = ({ dayPlan, userProfile, on
             </p>
           </div>
 
+          <div className="mb-8">
+            <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2 block">Additional Notes</label>
+            <textarea
+              className="w-full h-32 p-3 text-sm text-zinc-800 bg-zinc-100 border border-zinc-200 rounded-md focus:outline-none focus:border-zinc-400 focus:bg-white transition-colors resize-none"
+              placeholder="Jot down ideas, scripts, or reminders..."
+              value={dayPlan.notes || ''}
+              onChange={(e) => onUpdatePlan({ ...dayPlan, notes: e.target.value })}
+            />
+          </div>
+
           <div className="mt-auto pt-8 border-t border-zinc-200">
             <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3 block">Quick Actions</label>
             <div className="flex flex-col gap-2">
@@ -69,7 +79,7 @@ export const DayPlanner: React.FC<DayPlannerProps> = ({ dayPlan, userProfile, on
               <X size={20} />
             </button>
           </div>
-          <ChatInterface dayPlan={dayPlan} userProfile={userProfile} />
+          <ChatInterface key={dayPlan.date} dayPlan={dayPlan} userProfile={userProfile} />
         </div>
 
       </div>

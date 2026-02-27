@@ -21,6 +21,7 @@ export interface DayPlan {
   description: string;
   pillar?: string; // The specific format assigned to this day
   isPosted?: boolean;
+  notes?: string;
 }
 
 export interface ChatMessage {

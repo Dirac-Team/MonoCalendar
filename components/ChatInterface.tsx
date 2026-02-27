@@ -19,29 +19,53 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ dayPlan, userProfi
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Initialize chat session
-    chatSessionRef.current = createChatSession(userProfile, dayPlan.theme, dayPlan.description);
-    
-    // Initial greeting from AI
-    const initialGreeting = async () => {
-      setIsLoading(true);
+    // Check for stored messages
+    const storageKey = `mono_chat_${dayPlan.date}`;
+    const storedMessages = localStorage.getItem(storageKey);
+    let history: ChatMessage[] = [];
+
+    if (storedMessages) {
       try {
-        const result: GenerateContentResponse = await chatSessionRef.current!.sendMessage({
-          message: "Introduce yourself briefly as my assistant for this platform and ask how you can help with today's content theme." 
-        });
-        setMessages([{
-          id: 'init',
-          role: 'model',
-          text: result.text || "Ready to plan. What do you need?"
-        }]);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
+        history = JSON.parse(storedMessages);
+        setMessages(history);
+      } catch (e) {
+        console.error("Failed to parse chat history", e);
       }
-    };
-    initialGreeting();
+    }
+
+    // Initialize chat session
+    chatSessionRef.current = createChatSession(userProfile, dayPlan.theme, dayPlan.description, history);
+    
+    // Initial greeting from AI only if no history
+    if (history.length === 0) {
+      const initialGreeting = async () => {
+        setIsLoading(true);
+        try {
+          const result: GenerateContentResponse = await chatSessionRef.current!.sendMessage({
+            message: "Introduce yourself briefly as my assistant for this platform and ask how you can help with today's content theme." 
+          });
+          setMessages([{
+            id: 'init',
+            role: 'model',
+            text: result.text || "Ready to plan. What do you need?"
+          }]);
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      initialGreeting();
+    }
   }, [dayPlan, userProfile]);
+
+  // Save messages to local storage whenever they change
+  useEffect(() => {
+    const storageKey = `mono_chat_${dayPlan.date}`;
+    if (messages.length > 0) {
+      localStorage.setItem(storageKey, JSON.stringify(messages));
+    }
+  }, [messages, dayPlan.date]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

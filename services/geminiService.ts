@@ -1,13 +1,18 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { UserProfile, WeeklyPlanResponse } from "../types";
+import { UserProfile, WeeklyPlanResponse, ChatMessage } from "../types";
 
-const apiKey = process.env.API_KEY || '';
-const ai = new GoogleGenAI({ apiKey });
-
-// Helper to get the model name
 const MODEL_NAME = 'gemini-3-flash-preview';
 
+const getAiClient = () => {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    throw new Error("API Key not found. Please ensure API_KEY is set.");
+  }
+  return new GoogleGenAI({ apiKey });
+};
+
 export const generateWeeklyPlan = async (profile: UserProfile, startDate: Date): Promise<WeeklyPlanResponse> => {
+  const ai = getAiClient();
   const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const activeDays = profile.postingDays.map(d => daysOfWeek[d]).join(", ");
   
@@ -86,13 +91,20 @@ export const generateWeeklyPlan = async (profile: UserProfile, startDate: Date):
   }
 };
 
-export const createChatSession = (profile: UserProfile, dayTheme: string, dayDescription: string) => {
+export const createChatSession = (profile: UserProfile, dayTheme: string, dayDescription: string, history?: ChatMessage[]) => {
+  const ai = getAiClient();
   const pillarsContext = profile.contentPillars
     .map(p => `${p.name} (${p.description})`)
     .join(", ");
 
+  const formattedHistory = history ? history.map(msg => ({
+    role: msg.role,
+    parts: [{ text: msg.text }]
+  })) : [];
+
   return ai.chats.create({
     model: MODEL_NAME,
+    history: formattedHistory,
     config: {
       systemInstruction: `
         You are a specialized content assistant for a ${profile.brandType} brand on ${profile.platform}.
